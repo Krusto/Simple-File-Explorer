@@ -10,7 +10,7 @@ namespace FileExplorer
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("File explorer [Version 1.0");
+            Console.WriteLine("File explorer [Version 1.0]");
             Console.WriteLine("Copyright (c) 2018 Krusto Stoianov.  All rights reserved.");
             Console.WriteLine();
             var input = new List<string>() { "", "", "" };
@@ -53,6 +53,7 @@ namespace FileExplorer
                             if(new DirectoryInfo(Path + "\\" + input[1]).Exists)
                             {
                                 Path += "\\" + input[1];
+                                Path = Path.Replace('/', ' ');
                                 Path = string.Join("", Path.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)) + " ";
                             }
                         }
@@ -60,7 +61,6 @@ namespace FileExplorer
                     {
                     }
                 }
-
                 if (input[0] == "ls")
                 {
 
@@ -101,18 +101,91 @@ namespace FileExplorer
                     }
 
                 }
-
                 if (input[0] == "copy")
                 {
-                    string file = Directory.GetFiles().Where(x=>x.FullName.Contains(input[1])).ElementAt(0).FullName;
-
-                    string destinationFolder = input[2];
-
-                    if (new DirectoryInfo(destinationFolder).Exists)
+                    string file = "";
+                    try
                     {
-                        var currentFile = new FileInfo(file);
-                        currentFile.MoveTo(destinationFolder+"\\"+currentFile.Name);
-                        Console.WriteLine("Operation successful!");
+                        file = Directory.GetFiles().Where(x => x.FullName.Contains(input[1])).ElementAt(0).FullName;
+                        try
+                        {
+                            string destinationFolder = input[2];
+
+                            if (new DirectoryInfo(destinationFolder).Exists)
+                            {
+                                var currentFile = new FileInfo(file);
+                                currentFile.CopyTo(destinationFolder + "\\" + currentFile.Name);
+                                Console.WriteLine("Operation successful!");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Destination folder does not exist!");
+                            }
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Wrong destination path parameter!");
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"Wrong file name parameter!");
+                    }
+
+
+                }
+                if (input[0] == "cut")
+                {
+                    string file = "";
+                    try
+                    {
+                        file = Directory.GetFiles().Where(x => x.FullName.Contains(input[1])).ElementAt(0).FullName;
+                        try
+                        {
+                            string destinationFolder = input[2];
+
+                            if (new DirectoryInfo(destinationFolder).Exists)
+                            {
+                                var currentFile = new FileInfo(file);
+                                currentFile.MoveTo(destinationFolder + "\\" + currentFile.Name);
+                                Console.WriteLine("Operation successful!");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Destination folder does not exist!");
+                            }
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Wrong destination path parameter!");
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"Wrong file name parameter!");
+                    }
+
+
+                }
+                if (input[0] == "remove")
+                {
+                    string file = "";
+                    try
+                    {
+                        file = Directory.GetFiles().Where(x => x.FullName.Contains(input[1])).ElementAt(0).FullName;
+                        try
+                        {
+                            File.Delete(file);
+                            Console.WriteLine("Opration successfull!");
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Operation unsuccessfull!");
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"Wrong file name parameter!");
                     }
 
                 }
@@ -120,6 +193,7 @@ namespace FileExplorer
                 {
                     Console.Clear();
                 }
+
             }
 
         }
